@@ -49,6 +49,7 @@ gem "active_model_serializers"
 gem "rspotify"
 gem 'omniauth-spotify'
 gem 'figaro', '~> 1.2'
+gem 'httparty', '~> 0.22.0'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
