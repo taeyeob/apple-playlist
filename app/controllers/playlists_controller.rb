@@ -1,7 +1,15 @@
 class PlaylistsController < ApplicationController
+    require 'httparty'
+
+
     def index
-        file = File.read('spotify-playlist.json')
-        data = JSON.parse(file)
+        @playlists = Playlist.all
+    end
+
+    def create
+        # file = File.read('spotify-playlist.json')
+        title = params[:title]
+        data = JSON.parse(params[:json_data])
         playlist = data["spotify_playlist"]
         tracks = data["spotify_track_information"]
 
@@ -10,13 +18,14 @@ class PlaylistsController < ApplicationController
         playlist.each do |p|
             track_info = tracks[p]
             name = track_info["name"]
+            isrc = track_info["external_ids"]["isrc"]
             album = track_info["album"]["name"]
             artists = track_info["artists"].map { |artist| artist["name"] }
 
-            # find_or_create_by를 사용하려면 available_countries가 일정해야 한다 어려움 존재
-            track = Track.find_by(name: name, album: album)
+            # find_or_create_by를 사용하려면 available_countries가 일정해야 한다는 어려움 존재
+            track = Track.find_by(name: name, album: album, isrc: isrc)
             if track.nil?
-                track = Track.create(name: name, album: album, artists: artists, available_countries: track_info["available_markets"])
+                track = Track.create(name: name, album: album, artists: artists, available_countries: track_info["available_markets"], isrc: isrc)
             end
 
             track_ids << track.id
@@ -27,28 +36,29 @@ class PlaylistsController < ApplicationController
             common & sublist
         end
           
-        playlist = Playlist.find_by(title: 'Spotify Playlist', provider: 'spotify', provider_playlist_id: 'spotify-1')
-        if playlist.nil?
-            playlist = Playlist.create(title: 'Spotify Playlist', provider: 'spotify', provider_playlist_id: 'spotify-1', track_ids: track_ids, available_countries: playlist_countries)
+        playlist = Playlist.new(title: title, provider_playlist_id: 'sample-1', track_ids: track_ids, available_countries: playlist_countries)
+        
+        if playlist.save
+            redirect_to playlists_path, notice: 'Playlist was successfully created.'
+        else
+            render :new
         end
-
-        render json: {
-            data: playlist.as_json(include: :tracks)
-        }
     end
 
     def apple_music_playlist
         @playlist = Playlist.find(params[:id])
 
-        # provider를 'apple_music'으로 새로 생성하고 관련 데이터를 처리하는 로직
-        playlist = Playlist.find_by(title: @playlist.title, provider: 'apple music', provider_playlist_id: @playlist.provider_playlist_id)
-        if playlist.nil?
-            playlist = Playlist.create(title: @playlist.title, provider: 'apple music', provider_playlist_id: @playlist.provider_playlist_id, track_ids: @playlist.track_ids, available_countries: @playlist.playlist_countries)
+        apple_music_track_information = {}
+        tracks = @playlist.tracks
+        tracks.each do |track|
+            apple = track.find_song_by_isrc["data"].last
+            apple_music_track_information[apple["id"]] = apple
         end
         
         # 뷰 렌더링이나 추가 로직
         render json: {
-            data: playlist.as_json(include: :tracks)
+            apple_music_playlist: apple_music_track_information.keys,
+            apple_music_track_information: apple_music_track_information
         }
     end
 end

@@ -1,0 +1,29 @@
+<h1>Playlists</h1>
+
+<h3>플레이리스트 만들기</h3>
+<form action="/playlists" method="post">
+    <label for="title">Playlist 제목:</label>
+    <input type="text" id="title" name="title" />
+    <br><br>
+
+    <label for="jsondata">Spotify Playlist(JSON)</label>
+    <textarea id="jsondata" name="json_data" rows="10" cols="50"></textarea>
+    <br><br>
+
+    <button type="submit">Create Playlist</button>
+</form>
+<br><br>
+
+<h3>플레이리스트 내역</h3>
+<ul>
+    <% @playlists.each do |playlist| %>
+        <li><%= playlist.id %>: <%= playlist.title %> <br>
+            <% playlist.tracks.each do |track| %>
+                track #<%= track.id %>: <%= track.artists %> - <%= track.name %> <br></li>
+            <% end %>
+
+            <%= link_to "Get Apple Music Playlist Data", apple_music_playlist_playlist_path(playlist.id), method: :get %>
+            <br>
+        </li>
+    <% end %>
+</ul>

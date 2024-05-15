@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_13_141157) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_15_110143) do
   create_table "playlists", force: :cascade do |t|
     t.string "title"
-    t.string "provider", null: false
     t.string "provider_playlist_id"
     t.string "track_ids"
     t.string "available_countries", default: "{}"
@@ -29,6 +28,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_13_141157) do
     t.json "available_countries", default: "{}"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "isrc"
   end
 
 end
