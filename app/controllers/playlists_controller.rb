@@ -9,6 +9,7 @@ class PlaylistsController < ApplicationController
     def create
         # file = File.read('spotify-playlist.json')
         title = params[:title]
+        description = params[:description]
         data = JSON.parse(params[:json_data])
         playlist = data["spotify_playlist"]
         tracks = data["spotify_track_information"]
@@ -36,7 +37,7 @@ class PlaylistsController < ApplicationController
             common & sublist
         end
           
-        playlist = Playlist.new(title: title, provider_playlist_id: 'sample-1', track_ids: track_ids, available_countries: playlist_countries)
+        playlist = Playlist.new(title: title, description: description, track_ids: track_ids, available_countries: playlist_countries)
         
         if playlist.save
             redirect_to playlists_path, notice: 'Playlist was successfully created.'
