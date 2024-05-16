@@ -147,6 +147,13 @@ gem install figaro
 APPLE_MUSIC_DEVELOPER_TOKEN: 토큰 입력
 ```
 
+4. 실행
+```
+rails s
+# http://127.0.0.1:3000 -> playlists#index
+```
+- title, description, json_data(Spotify 플레이리스트 데이터) 입력하면 데이터기 생성됩니다.
+- 하단에 생기는 playlist 데이터의 `Get Apple Music Playlist Data` 버튼 클릭 시 Apply Music 플레이리스트 JSON 데이터를 볼 수 있습니다.
 
 ## 고민한 사항
 
