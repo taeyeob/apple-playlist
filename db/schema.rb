@@ -13,7 +13,7 @@
 ActiveRecord::Schema[7.1].define(version: 2024_05_15_110143) do
   create_table "playlists", force: :cascade do |t|
     t.string "title"
-    t.string "provider_playlist_id"
+    t.string "description"
     t.string "track_ids"
     t.string "available_countries", default: "{}"
     t.datetime "created_at", null: false
